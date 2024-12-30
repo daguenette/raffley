@@ -8,7 +8,7 @@ defmodule RaffleyWeb.Router do
     plug :put_root_layout, html: {RaffleyWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    # plug :spy
+    plug :spy
   end
 
   pipeline :api do
@@ -20,14 +20,15 @@ defmodule RaffleyWeb.Router do
 
     get "/", PageController, :home
     get "/rules", RuleController, :index
+    get "/rules/:id", RuleController, :show
   end
 
-  # def spy(conn, _opts) do
-  #   greeting = ~W(Hi Howdy Hello) |> Enum.random()
-  #   conn = assign(conn, :greeting, greeting)
-  #   IO.inspect(conn)
-  #   conn
-  # end
+  def spy(conn, _opts) do
+    greeting = ~W(Hi Howdy Hello) |> Enum.random()
+    conn = assign(conn, :greeting, greeting)
+    IO.inspect(conn)
+    conn
+  end
 
   # Other scopes may use custom stacks.
   scope "/api", RaffleyWeb do
