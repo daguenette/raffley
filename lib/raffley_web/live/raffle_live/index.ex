@@ -12,7 +12,7 @@ defmodule RaffleyWeb.RaffleLive.Index do
   def render(assigns) do
     ~H"""
     <div class="raffle-index">
-      <CustomComponents.banner>
+      <CustomComponents.banner :if={false}>
         <.icon name="hero-sparkles-solid" /> Mystery Raffle Coming Soon!
         <:details :let={emoji}>To Be Revealed Tomorrow {emoji}</:details>
         <:details>Any guesses?</:details>
