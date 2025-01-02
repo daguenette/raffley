@@ -24,6 +24,7 @@ defmodule RaffleyWeb.Router do
     live "/", RaffleLive.Index
     live "/estimator", EstimatorLive
     live "/raffles", RaffleLive.Index
+    live "/raffles/:id", RaffleLive.Show
   end
 
   def spy(conn, _opts) do
