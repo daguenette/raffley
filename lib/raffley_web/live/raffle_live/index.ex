@@ -5,12 +5,10 @@ defmodule RaffleyWeb.RaffleLive.Index do
   alias RaffleyWeb.CustomComponents
 
   def mount(_params, _session, socket) do
-
     socket =
       socket
       |> stream(:raffles, Raffles.list_raffles())
       |> assign(:form, to_form(%{}))
-
 
     {:ok, socket}
   end
@@ -23,9 +21,9 @@ defmodule RaffleyWeb.RaffleLive.Index do
         <:details :let={emoji}>To Be Revealed Tomorrow {emoji}</:details>
         <:details>Any guesses?</:details>
       </CustomComponents.banner>
-      <.filter_form form={@form}/>
+      <.filter_form form={@form} />
       <div class="raffles" id="raffles" phx-update="stream">
-        <.raffle_card :for={{dom_id, raffle} <- @streams.raffles} raffle={raffle} id={dom_id}/>
+        <.raffle_card :for={{dom_id, raffle} <- @streams.raffles} raffle={raffle} id={dom_id} />
       </div>
     </div>
     """
@@ -53,8 +51,8 @@ defmodule RaffleyWeb.RaffleLive.Index do
 
   def filter_form(assigns) do
     ~H"""
-    <.form for={@form}>
-      <.input field={@form[:q]} placeholder="Search..." autocomplete="off" />
+    <.form for={@form} id="filter-form" phx-change="filter">
+      <.input field={@form[:q]} placeholder="Search..." autocomplete="off" phx-debounce="500" />
       <.input
         type="select"
         field={@form[:status]}
@@ -65,10 +63,22 @@ defmodule RaffleyWeb.RaffleLive.Index do
         type="select"
         field={@form[:sort_by]}
         prompt="Sort By"
-        options={[:prize, :ticket_price]}
+        options={[
+          Prize: "prize",
+          "Price: High to Low": "ticket_price_desc",
+          "Price: Low to High": "ticket_price_asc"
+        ]}
       />
     </.form>
     """
   end
 
+  def handle_event("filter", params, socket) do
+    socket =
+      socket
+      |> assign(:form, to_form(params))
+      |> stream(:raffles, Raffles.filter_raffles(params), reset: true)
+
+    {:noreply, socket}
+  end
 end
